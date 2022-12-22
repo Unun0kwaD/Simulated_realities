@@ -1,0 +1,296 @@
+package com.sample
+  
+import com.sample.Window;
+import com.sample.Decision;
+
+global Window win;
+
+declare Question
+	content : String
+end
+
+declare Previous
+	question : Question
+	decision : Decision
+end
+
+declare Answer
+	question : Question
+	decision : Decision
+end
+
+rule "Init"
+	when
+	then
+		insert(new Question("Is it inside a brain?"));
+		win = new Window();
+		insert(win);
+		win.welcome();
+end
+
+rule "inside a brain?"
+    when q : Question()
+    then
+    	Decision ans = win.ask(q.getContent());
+    	Answer a = new Answer(q, ans);
+    	insert(a);
+end
+
+
+rule "inside a computer?"
+	when Answer(q : question, q.getContent() == "Is it inside a brain?" && getDecision() == Decision.NO)
+	then
+		Question que = new Question("Is it inside a computer?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+
+rule "For fun?"
+	when an:Answer(q : question, q.getContent() == "Is it inside a computer?" && getDecision() == Decision.NO || q.getContent() == "Reality by proxy?" && getDecision()==Decision.NO)
+	then
+		Question que = new Question("For fun?");
+		Previous p = new Previous(an.getQuestion(),an.getDecision()); 
+		insert(p);
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+
+rule "Humans are in charge?"
+	when Answer(q : question, q.getContent() == "Is it inside a computer?" && getDecision() == Decision.YES)
+	then
+		Question que = new Question("Humans are in charge?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+rule "Future sight?"
+	when Answer(q : question, q.getContent() == "Humans are in charge?" && getDecision() == Decision.YES)
+	then
+		Question que = new Question("Future sight?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+rule "Reality by proxy?"
+	when Answer(q : question, q.getContent() == "Future sight?" && getDecision() == Decision.NO)
+	then
+		Question que = new Question("Reality by proxy?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+rule "Machines are in charge?"
+	when Answer(q : question, q.getContent() == "Humans are in charge?" && getDecision() == Decision.NO)
+	then
+		Question que = new Question("Machines are in charge?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+rule "Matrix"
+	when Answer(q : question, q.getContent() == "Machines are in charge?" && getDecision() == Decision.YES)
+	then
+		win.finish("\"Matrix\"; \"The Matrix Reloaded\"; \"The Matrix Revolution\"");
+end
+
+rule "Clones?"
+	when Answer(q : question, q.getContent() == "For fun?" && getDecision() == Decision.NO)
+		Previous(p: question, p.getContent() == "Is it inside a computer?" && getDecision() == Decision.NO)
+	then
+		Question que = new Question("Clones?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+rule "\"Virtuosity\"; \"SourceCode\""
+	when Answer(q : question, q.getContent() == "For fun?" && getDecision() == Decision.NO)
+		Previous(p: question, p.getContent() == "Reality by proxy?" && getDecision() == Decision.NO)
+	then
+		win.finish( "\"Virtuosity\"; \"SourceCode\"");
+end
+rule "\"eXistenZ\"; \"The Thirteenth Floor\""
+	when Answer(q : question, q.getContent() == "For fun?" && getDecision() == Decision.YES)
+		Previous(p: question, p.getContent() == "Reality by proxy?" && getDecision() == Decision.NO)
+	then
+		win.finish( "\"eXistenZ\"; \"The Thirteenth Floor\"");
+end
+rule "Synecdoche, New York; The Truman Show"
+	when Answer(q : question, q.getContent() == "For fun?" && getDecision() == Decision.YES)
+		Previous(p: question, p.getContent() == "Is it inside a computer?" && getDecision() == Decision.NO)
+	then
+		win.finish("\"Synecdoche, New York\"; \"The Truman Show\"");
+end
+
+
+rule "The Cabin in the Woods"
+	when  Answer(q : question, q.getContent() == "Clones?" && getDecision() == Decision.NO)
+	then
+		win.finish("\"The Cabin in the Woods\"");
+end
+
+rule "Moon; The Island"
+	when  Answer(q : question, q.getContent() == "Clones?" && getDecision() == Decision.YES)
+	then
+		win.finish("\"Moon\"; \"The Island\"");
+end
+rule "Supernatural"
+	when Answer(q : question, q.getContent() == "Is it inside a brain?" && getDecision() == Decision.YES)
+	then
+		Question que = new Question("Supernatural?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+
+rule "External influence?"
+	when Answer(q : question, q.getContent() == "Supernatural?" && getDecision() == Decision.NO)
+	then
+		Question que = new Question("External influence?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+rule "Drugs?"
+	when Answer(q : question, q.getContent() == "External influence?" && getDecision() == Decision.NO)
+	then
+		Question que = new Question("Drugs?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+rule "\"Limitless\"; \"A Scanner Darkly\""
+	when  Answer(q : question, q.getContent() == "Drugs?" && getDecision() == Decision.YES)
+	then
+		win.finish("\"Limitless\"; \"A Scanner Darkly\"");
+end
+rule "Misinterpretation?"
+	when  Answer(q : question, q.getContent() == "Drugs?" && getDecision() == Decision.NO)
+	then
+		Question que = new Question("Misinterpretation?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+rule "Imaginary Friends?"
+	when  Answer(q : question, q.getContent() == "Misinterpretation?" && getDecision() == Decision.NO)
+	then
+		Question que = new Question("Imaginary Friends?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+	
+rule "Trauma?"
+	when Answer(q : question, q.getContent() == "External influence?" && getDecision() == Decision.YES)
+	then
+		Question que = new Question("Trauma?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+rule "Inception"
+	when  Answer(q : question, q.getContent() == "Trauma?" && getDecision() == Decision.NO)
+	then
+		win.finish("\"Inception\"");
+end
+rule "Car accident?"
+	when  Answer(q : question, q.getContent() == "Trauma?" && getDecision() == Decision.YES)
+	then
+		Question que = new Question("Car accident?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+rule "Ivan Vasilievich Changes Profession"
+	when  Answer(q : question, q.getContent() == "Car accident?" && getDecision() == Decision.NO)
+	then
+		win.finish("\"Ivan Vasilievich Changes Profession\"");
+end
+rule "Afterlife?"
+	when Answer(q : question, q.getContent() == "Supernatural?" && getDecision() == Decision.YES)
+	then
+		Question que = new Question("Afterlife?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+rule "Sci-fi?"
+	when Answer(q : question, q.getContent() == "Afterlife?" && getDecision() == Decision.YES)
+	then
+		Question que = new Question("Sci-fi?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+
+rule "Multiverse?"
+	when Answer(q : question, q.getContent() == "Afterlife?" && getDecision() == Decision.NO)
+	then
+		Question que = new Question("Multiverse?");
+    	Decision ans = win.ask(que.getContent());
+    	Answer a = new Answer(que,ans);
+    	insert(a);
+end
+rule "Mr. Nobody"
+	when  Answer(q : question, q.getContent() == "Multiverse?" && getDecision() == Decision.YES)
+	then
+		win.finish("\"Mr. Nobody\"");
+end
+rule "\"Next\"; \"Minority Report\""
+	when  Answer(q : question, q.getContent() == "Multiverse?" && getDecision() == Decision.NO)
+	then
+		win.finish("\"Next\"; \"Minority Report\"");
+end
+rule "\"Sucker Punch\"; \"Franklyn\""
+	when  Answer(q : question, q.getContent() == "Misinterpretation?" && getDecision() == Decision.YES)
+	then
+		win.finish("\"Sucker Punch\"; \"Franklyn\"");
+end
+rule "\"Flashforward\"; \"Paycheck\""
+	when  Answer(q : question, q.getContent() == "Future sight?" && getDecision() == Decision.YES)
+	then
+		win.finish("\"Flashforward\"; \"Paycheck\"");
+end
+rule "Dark City"
+	when  Answer(q : question, q.getContent() == "Machines are in charge??" && getDecision() == Decision.NO)
+	then
+		win.finish("\"Dark City\"");
+end
+
+rule "\"Fight Club\"; \"The Revolver\""
+	when  Answer(q : question, q.getContent() == "Imaginary Friends?" && getDecision() == Decision.YES)
+	then
+		win.finish( "\"Fight Club\"; \"The Revolver\"");
+end
+rule "\"Identity\""
+	when  Answer(q : question, q.getContent() == "Imaginary Friends?" && getDecision() == Decision.NO)
+	then
+		win.finish( "\"Identity\"");
+end
+rule "\"Life on Mars [2006]\"; \"Stay\""
+	when  Answer(q : question, q.getContent() == "Car accident?" && getDecision() == Decision.YES)
+	then
+		win.finish( "\"Life on Mars [2006]\"; \"Stay\"");
+end
+rule "\"Vanilla Sky\""
+	when  Answer(q : question, q.getContent() == "Sci-fi?" && getDecision() == Decision.YES)
+	then
+		win.finish( "\"Vanilla Sky\"");
+end
+rule "\"Triangle\"; \"The I Inside\""
+	when  Answer(q : question, q.getContent() == "Sci-fi?" && getDecision() == Decision.NO)
+	then
+		win.finish("\"Triangle\"; \"The I Inside\"");
+end
+rule "\"The Island\"; \"Moon\""
+	when  Answer(q : question, q.getContent() == "Clones?" && getDecision() == Decision.YES)
+	then
+		win.finish( "\"The Island\"; \"Moon\"");
+end
+rule "\"Surrogates\""
+	when  Answer(q : question, q.getContent() == "Reality by proxy?" && getDecision() == Decision.YES)
+	then
+		win.finish( "\"Surrogates\"");
+end
